@@ -1,0 +1,128 @@
+Denise Doan - ar
+Yuuki Ota - aq
+
+
+1. 
+   Cluster 6: 
+   	    Time: 52min 24sec --> 3144sec
+	    # of Searches: 11
+	    # of Reducers: 30
+
+   Cluster 9:
+	    Time: 41min 46sec --> 2506sec
+	    # of Searches: 15
+	    # of Reducers: 45
+
+   Cluster 12:
+   	    Time: 35min 44sec --> 2144sec
+	    # of Searches: 14
+	    # of Reducers: 20
+
+2. Cluster 6:
+   	   Distance at 50th Percentile: 4
+	   Distance at 90th Percentile: 4
+	   Distance at 95th Percentile: 5
+
+   Cluster 9:
+   	   Distance at 50th Percentile: 4
+	   Distance at 90th Percentile: 5
+	   Distance at 95th Percentile: 5
+
+   Cluster 12:
+   	   Distance at 50th Percentile: 4
+	   Distance at 90th Percentile: 5
+	   Distance at 95th Percentile: 5
+
+3. 
+   6: 	2788427668Byte * 9.53674316 × 10-7 = 2659.251848995375088MB
+   	→ 2659.251848995375088 * 11
+	 =  29251.791MB / 3144 sec
+	 = 9.304MB/s
+
+   9: 	2788434654Byte * 9.53674316 × 10-7 = 2659.258511364146664MB
+   	→ 2659.258511364146664 * 15
+	 =  39888.878MB / 2506 sec
+	 = 15.917MB/s
+
+   12: 	2788432467Byte * 9.53674316 × 10-7 = 2659.25642568MB
+	→ 2659.25642568 * 14
+	 =  37229.590MB / 2144 sec
+	 = 17.365 MB/s
+4.
+	SpeedUp9 = ProcessingRate9 / ProcessingRate6
+		 = 15.917 / 9.304 = 1.71077 times faster
+
+ 	Speedup12 = ProcessingRate12 / ProcessingRate6
+		  = 17.365 / 9.304 = 1.8664 times faster
+
+     What do you conclude about how well Hadoop parallelizes your work? 
+
+     Hadoop most effectively parallelizes larger data sets, since there are more jobs and data to divide and distribute. The larger throughput means the work is accomplished faster and more data can be processed at a time. This efficient division of work defines how well Hadoop parallelizes work and the processing of data.
+     Hadoop divides and distributes work evenly and through multiple phases. Within the mapping process, it immediately parallelizes the input into multiple FileSplits before creating key-value pairs and applying the map function on each pair. Following the mapper phase, Hadoop continues to further parallelize the work of mapreduce through a combiner. The combiner accumulates all values associate with a specific key into an iterable set. This occurs for each key simultaneously. Lastly, the reducer phase is also applied in parallel, where the reducer takes in a key and its associated iterable set of values and produces a collection of reduced values. Through these many means of parallelization, Hadoop provides for effective and efficient parallelization of work and processing large amounts of data through mapreduce.
+
+     Is this a case of strong scaling or weak scaling? Why or why not?
+
+     Strong scaling is defined by how the solution time varies with the number of processors for a fixed data set size. On the other hand, weak scaling is classified as how the solution time varies with the number of processors for a fixed problem size per processor. This is a case of strong scaling because the solution times varied as a result of altering the number of processors for the same data set (hollywood). Where the number of clusters increased from 6, to 9, to 12, and hollywood was run each time, the solution times decreased as a result of increasing the number of clusters and processors, and by allowing more processors to process the same amount of data.
+
+
+
+5.
+   What is the purpose of including the combiner in the histogram skeleton code? 
+
+	The combiner class is run on every node that has run map tasks, where it reduces the key-value pairs outputted by the mapper function, and ultimately improves efficiency. For each key, the combiner combines the values into a list--or simply combines the values--so that it is easy to iterate through all values and to manipulate each value associated with the current specific key in the reducing phase. As a result, each node only sends one value to the reducer for each key, ultimately optimizing the bandwidth usage of the MapReduce job, and speeding up the process.
+	In this histogram code, the combiner collects the total number of times a certain distance occurs from an origin to another node into an iterable set. This outputs a key-value pair of the form (distance, list of number of times this distance has occurred in the data set), which is then sent to the reducer to combine and calculate the total number of occurrences of each distance: (distance, total number of occurrences of this distance in the data).
+
+	Does its inclusion affect performance much? Why or why not?
+
+	Including combiners in mapreduce makes reducing more efficient and faster at processing data. Because combiner classes create iterable sets containing values for each key, there is a faster access time in retrieving and manipulating each value since it is already associated with a specific key. 
+
+	Could you have used a combiner in your other mapreduces? Why or why not?
+
+	Having combiners in all mapreduces helps efficiency since it provides a more easier access to all values associated to each key; therefore, it would be more beneficial to have a combiner in all other mapreduces. This way, it will take approximately O(1) to retrieve each value and promptly continue with the mapreduce process. 
+
+6. 	6: 
+		29251.791MB * 0.0009765625 = 28.5662GB
+		52min 24sec → 60 min → 1 hour
+		$0.68/hour * 1 hour = $0.68
+		$0.68*6 = $4.08
+		$4.08 / 28.5662GB = $0.142826/GB
+
+		$0.14 / GB
+
+	9:
+		39888.878 * 0.0009765625 = 38.954GB
+		41min46sec → 1 hour
+		$0.68/hour * 1 hour = $0.68
+		$0.68 * 9 = $6.12
+		$6.12 / 38.954GB = $0.157108/GB
+
+		$0.15 / GB
+
+	12:
+		37229.590 * 0.0009765625 = 36.357GB
+		35min44sec → 1hour 
+		1 hour * $0.68/hour = $0.68
+		$0.68 * 12 clusters = $8.16
+		$8.16 / 36.357GB = $0.224441/GB
+
+		$0.22 / GB
+
+7. 	6:
+		52min24sec → 1hour
+		1 hour * $0.68/hour = $0.68
+		$0.68 * 6clusters = $4.08
+
+	9:	
+		41min46sec → 1hour
+		1 hour * $0.68/hour = $0.68
+		$0.68 * 9clusters = $6.12
+
+	12:	
+		35min44sec → 1hour 
+		1 hour * $0.68/hour = $0.68
+		$0.68 * 12 clusters = $8.16
+
+		TOTAL: $4.08 + $6.12 + $8.16 = $18.36
+
+9. I think this project offered a good opportunity to learn about and work with mapreduce more in depth. It also provided guidance into how clusters are run and how mapreduce is executed in a more real-world application. It would help if there was more structure and guidance for developing Part 1, but that can be remedied by altering or clarifying the project spec. But overall, this project has really honed the understanding of mapreduce as a whole, as well as in its separate and individual parts.
+		
